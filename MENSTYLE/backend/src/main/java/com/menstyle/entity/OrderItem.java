@@ -1,0 +1,4 @@
+package com.menstyle.entity;
+import jakarta.persistence.*; import lombok.*; import java.math.BigDecimal;
+@Getter @Setter @NoArgsConstructor @Entity @Table(name="order_items")
+public class OrderItem extends BaseEntity { @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="order_id",nullable=false) private Order order; @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="variant_id",nullable=false) private ProductVariant variant; @Column(nullable=false) private String productName; @Column(nullable=false) private String sku; @Column(nullable=false) private String sizeName; @Column(nullable=false) private String colorName; @Column(nullable=false,precision=19,scale=2) private BigDecimal unitPrice; @Column(nullable=false) private int quantity; @Column(nullable=false,precision=19,scale=2) private BigDecimal totalPrice; }

@@ -1,0 +1,4 @@
+package com.menstyle.entity;
+import com.menstyle.entity.enums.*; import jakarta.persistence.*; import lombok.*; import java.math.BigDecimal; import java.time.LocalDateTime;
+@Getter @Setter @NoArgsConstructor @Entity @Table(name="payments",indexes=@Index(name="idx_payments_transaction",columnList="transaction_code"))
+public class Payment extends BaseEntity { @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="order_id",nullable=false) private Order order; @Enumerated(EnumType.STRING) @Column(nullable=false,length=20) private PaymentMethod paymentMethod; @Column(length=120) private String transactionCode; @Column(nullable=false,precision=19,scale=2) private BigDecimal amount; @Enumerated(EnumType.STRING) @Column(nullable=false,length=20) private PaymentStatus paymentStatus; private LocalDateTime paidAt; @Column(columnDefinition="nvarchar(max)") private String responseData; }

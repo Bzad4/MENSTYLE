@@ -1,0 +1,9 @@
+import { useEffect, useState } from 'react';
+import { getAdminCustomers, updateAdminCustomerStatus } from '../api/adminApi';
+export default function AdminCustomersPage() {
+  const [state, setState] = useState({ loading: true, data: null, error: '' }); const [keyword, setKeyword] = useState('');
+  const load = () => { setState((s) => ({ ...s, loading: true })); getAdminCustomers({ keyword: keyword || undefined, page: 0, size: 30 }).then((data) => setState({ loading: false, data, error: '' })).catch((e) => setState({ loading: false, data: null, error: e.response?.data?.message || 'Không thể tải khách hàng.' })); };
+  useEffect(load, []);
+  const toggle = async (customer) => { try { await updateAdminCustomerStatus(customer.id, customer.status === 'ACTIVE' ? 'LOCKED' : 'ACTIVE'); load(); } catch (e) { setState((s) => ({ ...s, error: e.response?.data?.message || 'Không thể cập nhật trạng thái.' })); } };
+  return <section className="admin-page"><div className="admin-page-heading"><div><p className="admin-kicker">CUSTOMERS</p><h1>Khách hàng</h1></div></div><form className="admin-toolbar" onSubmit={(e) => { e.preventDefault(); load(); }}><input placeholder="Tên hoặc email" value={keyword} onChange={(e) => setKeyword(e.target.value)} /><button className="admin-submit">Tìm</button></form>{state.error && <div className="admin-form-error">{state.error}</div>}{state.loading ? <div className="admin-empty">Đang tải...</div> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Khách hàng</th><th>Trạng thái</th><th>Số đơn</th><th>Tổng mua</th><th /></tr></thead><tbody>{(state.data?.content || []).map((c) => <tr key={c.id}><td><strong>{c.fullName}</strong><br />{c.email}</td><td>{c.status}</td><td>{c.orderCount}</td><td>{Number(c.totalSpent).toLocaleString('vi-VN')} đ</td><td><button onClick={() => toggle(c)}>{c.status === 'ACTIVE' ? 'Khóa' : 'Mở khóa'}</button></td></tr>)}</tbody></table></div>}</section>;
+}

@@ -1,0 +1,4 @@
+package com.menstyle.entity;
+import com.menstyle.entity.enums.ReviewStatus; import jakarta.persistence.*; import lombok.*;
+@Getter @Setter @NoArgsConstructor @Entity @Table(name="reviews",indexes=@Index(name="idx_reviews_product",columnList="product_id"),uniqueConstraints=@UniqueConstraint(name="uk_reviews_order_item",columnNames="order_item_id"))
+public class Review extends BaseEntity { @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="user_id",nullable=false) private User user; @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="product_id",nullable=false) private Product product; @OneToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="order_item_id",nullable=false) private OrderItem orderItem; @Column(nullable=false) private int rating; private String comment; @Enumerated(EnumType.STRING) @Column(nullable=false,length=20) private ReviewStatus status; }
